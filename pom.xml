@@ -612,6 +612,7 @@
         <module>plugin-default-impl</module>
         <module>prometheus</module>
         <module>persistence</module>
+        <module>lock</module>
     </modules>
     
     <!-- Default dependencies in all subprojects -->
