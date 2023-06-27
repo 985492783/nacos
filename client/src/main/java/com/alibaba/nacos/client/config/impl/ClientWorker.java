@@ -188,14 +188,16 @@ public class ClientWorker implements Closeable {
         
         HttpRestResult<String> result = null;
         try {
-            Map<String, String> params = new HashMap<String, String>(3);
+            Map<String, String> params = new HashMap<String, String>(4);
             if (StringUtils.isBlank(tenant)) {
                 params.put("dataId", dataId);
                 params.put("group", group);
+                params.put("show", "all");
             } else {
                 params.put("dataId", dataId);
                 params.put("group", group);
                 params.put("tenant", tenant);
+                params.put("show", "all");
             }
             result = agent.httpGet(Constants.CONFIG_CONTROLLER_PATH, null, params, agent.getEncode(), readTimeout);
         } catch (Exception ex) {
