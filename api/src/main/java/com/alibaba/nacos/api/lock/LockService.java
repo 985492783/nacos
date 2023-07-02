@@ -1,5 +1,6 @@
 package com.alibaba.nacos.api.lock;
 
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.lock.listen.EventListen;
 import com.alibaba.nacos.api.lock.model.LockInfo;
 import com.alibaba.nacos.api.lock.model.LockInstance;
@@ -11,9 +12,9 @@ import com.alibaba.nacos.api.lock.model.LockInstance;
 public interface LockService {
 
     
-    Boolean lock(LockInfo lockInfo);
+    Boolean lock(LockInfo lockInfo) throws NacosException;
     
-    Boolean waitLock(LockInfo lockInfo, long waitTime);
+    Boolean tryLock(LockInfo lockInfo, long waitTime) throws NacosException;
     
-    void addListener(LockInstance instance, EventListen eventListen);
+    void addListener(LockInstance instance, EventListen eventListen) throws NacosException;
 }

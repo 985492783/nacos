@@ -594,6 +594,7 @@
     <modules>
         <module>config</module>
         <module>core</module>
+        <module>lock</module>
         <module>naming</module>
         <module>address</module>
         <module>test</module>
@@ -612,7 +613,6 @@
         <module>plugin-default-impl</module>
         <module>prometheus</module>
         <module>persistence</module>
-        <module>lock</module>
     </modules>
     
     <!-- Default dependencies in all subprojects -->
@@ -683,6 +683,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>nacos-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>nacos-lock</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

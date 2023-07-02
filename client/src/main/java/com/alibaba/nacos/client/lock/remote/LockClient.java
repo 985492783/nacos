@@ -1,5 +1,6 @@
 package com.alibaba.nacos.client.lock.remote;
 
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.lock.listen.EventListen;
 import com.alibaba.nacos.api.lock.model.LockInfo;
 import com.alibaba.nacos.api.lock.model.LockInstance;
@@ -12,9 +13,7 @@ import com.alibaba.nacos.common.lifecycle.Closeable;
  */
 public interface LockClient extends Closeable {
     
-    Boolean lock(LockInfo lockInfo);
-    
-    Boolean waitLock(LockInfo lockInfo, long waitTime);
+    Boolean lock(LockInfo lockInfo) throws NacosException;
     
     void addListener(LockInstance instance, EventListen eventListen);
 }

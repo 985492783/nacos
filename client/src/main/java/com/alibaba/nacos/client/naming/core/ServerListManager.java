@@ -83,6 +83,10 @@ public class ServerListManager implements ServerListFactory, Closeable {
         this(NacosClientProperties.PROTOTYPE.derive(properties), null);
     }
     
+    public ServerListManager(NacosClientProperties properties) {
+        this(properties, null);
+    }
+    
     public ServerListManager(NacosClientProperties properties, String namespace) {
         this.namespace = namespace;
         initServerAddr(properties);

@@ -28,5 +28,31 @@ public class LockInfo implements Serializable {
     
     private String key;
     
+    private LockType lockType = LockType.PRIMARY;
+    
     private LockInstance lockInstance;
+    
+    public String getKey() {
+        return key;
+    }
+    
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+    public LockType getLockType() {
+        return lockType;
+    }
+    
+    public void setLockType(LockType lockType) {
+        this.lockType = lockType;
+    }
+    
+    public LockInstance getLockInstance() {
+        return lockInstance;
+    }
+    
+    public void setLockInstance(LockInstance lockInstance) {
+        this.lockInstance = lockInstance;
+    }
 }
