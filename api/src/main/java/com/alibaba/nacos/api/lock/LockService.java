@@ -28,9 +28,28 @@ import com.alibaba.nacos.api.lock.model.LockInstance;
  */
 public interface LockService {
     
+    /**
+     * try to get lock with default waitTime.
+     * @param lockInfo contains key and instance.
+     * @return true if success.
+     * @throws NacosException nacos Exception.
+     */
     Boolean lock(LockInfo lockInfo) throws NacosException;
     
+    /**
+     * try lock until waitTime.
+     * @param lockInfo contains key and instance.
+     * @param waitTime waitTime.
+     * @return true if success.
+     * @throws NacosException nacos Exception.
+     */
     Boolean tryLock(LockInfo lockInfo, long waitTime) throws NacosException;
     
+    /**
+     * add listener.
+     * @param instance instance.
+     * @param eventListen event listen.
+     * @throws NacosException nacos Exception.
+     */
     void addListener(LockInstance instance, EventListen eventListen) throws NacosException;
 }

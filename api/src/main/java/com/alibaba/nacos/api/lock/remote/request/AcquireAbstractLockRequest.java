@@ -17,7 +17,7 @@
 package com.alibaba.nacos.api.lock.remote.request;
 
 import com.alibaba.nacos.api.lock.model.LockInfo;
-import com.alibaba.nacos.api.lock.remote.LockRequest;
+import com.alibaba.nacos.api.lock.remote.AbstractLockRequest;
 
 /**
  * grpc acquire lock request.
@@ -25,7 +25,7 @@ import com.alibaba.nacos.api.lock.remote.LockRequest;
  * @description AcquireLockRequest
  * @date 2023/6/29 12:01
  */
-public class AcquireLockRequest extends LockRequest {
+public class AcquireAbstractLockRequest extends AbstractLockRequest {
 
     private LockInfo lockInfo;
     

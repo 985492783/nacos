@@ -26,7 +26,7 @@ import static com.alibaba.nacos.api.common.Constants.Lock.LOCK_MODULE;
  * @description LockRequest
  * @date 2023/6/29 12:00
  */
-public abstract class LockRequest extends Request {
+public abstract class AbstractLockRequest extends Request {
     
     @Override
     public String getModule() {
