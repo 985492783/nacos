@@ -10,4 +10,5 @@ public class PropertyConstants {
     public static final String LOCK_REQUEST_TIMEOUT = "lockRequestTimeout";
     
     public static final String LOCK_DEFAULT_WAIT_TIME = "nacos.lock.default_wait_time";
+    public static final Long LOCK_DEFAULT_WAIT_SECOND = 10_000L;
 }

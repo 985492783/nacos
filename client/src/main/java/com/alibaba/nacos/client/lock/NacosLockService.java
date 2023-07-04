@@ -29,7 +29,7 @@ public class NacosLockService implements LockService {
     
     public NacosLockService(Properties properties) throws NacosException {
         final NacosClientProperties nacosClientProperties = NacosClientProperties.PROTOTYPE.derive(properties);
-        this.defaultWaitTime = nacosClientProperties.getLong(PropertyConstants.LOCK_DEFAULT_WAIT_TIME);
+        this.defaultWaitTime = nacosClientProperties.getLong(PropertyConstants.LOCK_DEFAULT_WAIT_TIME, PropertyConstants.LOCK_DEFAULT_WAIT_SECOND);
         ServerListManager serverListManager = new ServerListManager(nacosClientProperties);
         SecurityProxy securityProxy = new SecurityProxy(serverListManager.getServerList(),
                 NamingHttpClientManager.getInstance().getNacosRestTemplate());
