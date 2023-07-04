@@ -8,7 +8,6 @@ import com.alibaba.nacos.api.lock.model.LockInfo;
 import com.alibaba.nacos.api.lock.model.LockInstance;
 import com.alibaba.nacos.client.env.NacosClientProperties;
 import com.alibaba.nacos.client.lock.core.LockServiceProxy;
-import com.alibaba.nacos.client.lock.remote.AbstractLockClient;
 import com.alibaba.nacos.client.lock.remote.grpc.LockGrpcClient;
 import com.alibaba.nacos.client.naming.core.ServerListManager;
 import com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager;
@@ -17,6 +16,7 @@ import com.alibaba.nacos.client.security.SecurityProxy;
 import java.util.Properties;
 
 /**
+ * client nacos lock serviceImpl.
  * @author 985492783@qq.com
  * @description NacosLockService
  * @date 2023/6/28 17:16

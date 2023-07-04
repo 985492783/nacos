@@ -10,7 +10,8 @@ import com.alibaba.nacos.plugin.auth.constant.ActionTypes;
 import org.springframework.stereotype.Component;
 
 /**
- * @author qiyue.zhang@aloudata.com
+ * lock grpc handler.
+ * @author 985492783@qq.com
  * @description LockRequestHandler
  * @date 2023/6/29 14:00
  */

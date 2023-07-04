@@ -7,6 +7,7 @@ import com.alibaba.nacos.api.lock.model.LockInstance;
 import com.alibaba.nacos.common.lifecycle.Closeable;
 
 /**
+ * lock client interface.
  * @author zhanghong
  * @description LockClient
  * @date 2023/6/28 17:19

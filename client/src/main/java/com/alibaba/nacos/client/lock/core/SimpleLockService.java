@@ -8,7 +8,8 @@ import com.alibaba.nacos.client.lock.AbstractLockService;
 import com.alibaba.nacos.client.lock.remote.AbstractLockClient;
 
 /**
- * @author qiyue.zhang@aloudata.com
+ * simple lock service.
+ * @author 985492783@qq.com
  * @description SimpleLockService
  * @date 2023/6/29 10:59
  */

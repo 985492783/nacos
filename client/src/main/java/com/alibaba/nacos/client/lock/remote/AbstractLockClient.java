@@ -1,6 +1,5 @@
 package com.alibaba.nacos.client.lock.remote;
 
-import com.alibaba.nacos.client.env.NacosClientProperties;
 import com.alibaba.nacos.client.security.SecurityProxy;
 import com.alibaba.nacos.client.utils.AppNameUtils;
 import com.alibaba.nacos.plugin.auth.api.RequestResource;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * abstract lock client.
  * @author 985492783@qq.com
  * @description AbstractLockClient
  * @date 2023/6/28 17:19
@@ -21,8 +21,6 @@ public abstract class AbstractLockClient implements LockClient {
     protected AbstractLockClient(SecurityProxy securityProxy) {
         this.securityProxy = securityProxy;
     }
-    
-    
     
     protected Map<String, String> getSecurityHeaders(String namespace, String group, String serviceName) {
         RequestResource resource = RequestResource.namingBuilder().setNamespace(namespace).setGroup(group)

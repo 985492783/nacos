@@ -7,19 +7,20 @@ import com.alibaba.nacos.api.lock.model.LockInfo;
 import com.alibaba.nacos.api.lock.model.LockInstance;
 import com.alibaba.nacos.api.lock.model.LockType;
 import com.alibaba.nacos.client.lock.AbstractLockService;
-import com.alibaba.nacos.client.lock.NacosLockService;
 import com.alibaba.nacos.client.lock.remote.AbstractLockClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author qiyue.zhang@aloudata.com
+ * lock service proxy, choose service by lockType.
+ * @author 985492783@qq.com
  * @description LockServiceProxy
  * @date 2023/6/29 10:59
  */
 public class LockServiceProxy extends AbstractLockService {
     private final Map<LockType, LockService> lockServiceMap;
+
     public LockServiceProxy(AbstractLockClient lockClient) throws NacosException {
         super(lockClient);
         this.lockServiceMap = new HashMap<>();
@@ -38,7 +39,6 @@ public class LockServiceProxy extends AbstractLockService {
         }
         throw new NacosException();
     }
-    
     
     @Override
     public void addListener(LockInstance instance, EventListen eventListen) {

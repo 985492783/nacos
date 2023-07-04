@@ -19,6 +19,7 @@ package com.alibaba.nacos.api.lock.model;
 import java.io.Serializable;
 
 /**
+ * lock info entity.
  * @author 985492783@qq.com
  * @date 2023/6/28 2:46
  */

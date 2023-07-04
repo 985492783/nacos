@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
 /**
+ * lock grpc client.
  * @author 985492783@qq.com
  * @description LockGrpcClient
  * @date 2023/6/28 17:35
@@ -52,6 +52,7 @@ public class LockGrpcClient extends AbstractLockClient {
                 RpcClientTlsConfig.properties(properties.asProperties()));
         start(serverListFactory);
     }
+
     private void start(ServerListFactory serverListFactory) throws NacosException {
         rpcClient.serverListFactory(serverListFactory);
         rpcClient.start();
