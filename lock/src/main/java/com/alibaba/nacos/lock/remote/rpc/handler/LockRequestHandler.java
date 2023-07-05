@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 public class LockRequestHandler extends RequestHandler<AcquireAbstractLockRequest, AcquireLockResponse> {
     
     @Override
-    @Secured(action = ActionTypes.READ)
+    @Secured(action = ActionTypes.WRITE)
     public AcquireLockResponse handle(AcquireAbstractLockRequest request, RequestMeta meta) throws NacosException {
         System.out.println(request.getLockInfo());
         return new AcquireLockResponse(Boolean.TRUE);

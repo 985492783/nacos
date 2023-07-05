@@ -77,6 +77,7 @@ public class LockGrpcClient extends AbstractLockClient {
     @Override
     public Boolean lock(LockInfo lockInfo) throws NacosException {
         AcquireAbstractLockRequest request = new AcquireAbstractLockRequest();
+        request.setLockInfo(lockInfo);
         AcquireLockResponse acquireLockResponse = requestToServer(request, AcquireLockResponse.class);
         return acquireLockResponse.getResult();
     }
@@ -94,7 +95,6 @@ public class LockGrpcClient extends AbstractLockClient {
     private <T extends Response> T requestToServer(AbstractLockRequest request, Class<T> responseClass)
             throws NacosException {
         try {
-            //request.putAllHeader();
             Response response =
                     requestTimeout < 0 ? rpcClient.request(request) : rpcClient.request(request, requestTimeout);
             if (ResponseCode.SUCCESS.getCode() != response.getResultCode()) {
