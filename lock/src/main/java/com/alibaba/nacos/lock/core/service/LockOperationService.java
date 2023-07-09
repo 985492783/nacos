@@ -16,6 +16,8 @@
 
 package com.alibaba.nacos.lock.core.service;
 
+import com.alibaba.nacos.api.lock.model.LockInfo;
+
 /**
  * lock operator service.
  * @author 985492783@qq.com
@@ -27,5 +29,5 @@ public interface LockOperationService {
      * get lock operator.
      * @return Boolean.
      */
-    Boolean lock();
+    Boolean lock(LockInfo lockInfo);
 }
