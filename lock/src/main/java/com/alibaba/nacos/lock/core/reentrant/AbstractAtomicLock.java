@@ -14,41 +14,18 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.api.lock.model;
-
-import java.io.Serializable;
+package com.alibaba.nacos.lock.core.reentrant;
 
 /**
- * lock instance.
- * @author 985492783@qq.com
- * @date 2023/6/28 2:46
+ * atomic lock.
+ * @author qiyue.zhang@aloudata.com
+ * @description AtomicLock
+ * @date 2023/7/10 14:50
  */
-public class LockInstance implements Serializable {
-    private static final long serialVersionUID = -53506310567291979L;
-
-    /**
-     * instance ip.
-     */
-    private String ip;
-
-    /**
-     * instance port.
-     */
-    private int port;
-
-    public String getIp() {
-        return ip;
+public abstract class AbstractAtomicLock implements AtomicLockService {
+    private final String key;
+    public AbstractAtomicLock(String key) {
+        this.key = key;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 }

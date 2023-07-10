@@ -16,11 +16,42 @@
 
 package com.alibaba.nacos.lock.core.event;
 
+import com.alibaba.nacos.common.notify.Event;
+import com.alibaba.nacos.lock.core.client.LockClient;
+
 /**
  * lock event.
  * @author 985492783@qq.com
  * @date 2023/6/28 2:36
  */
-public class LockEvent {
+public class LockEvent extends Event {
+    private static final long serialVersionUID = -3411818115593181708L;
 
+    private LockClient client;
+
+    private LockEvent(LockClient client) {
+        this.client = client;
+    }
+
+    public LockClient getClient() {
+        return client;
+    }
+
+    public void setClient(LockClient client) {
+        this.client = client;
+    }
+
+    public static class AcquireLockEvent extends LockEvent {
+
+        private AcquireLockEvent(LockClient client) {
+            super(client);
+        }
+    }
+
+    public static class DisConnectLockEvent extends LockEvent {
+
+        public DisConnectLockEvent(LockClient client) {
+            super(client);
+        }
+    }
 }

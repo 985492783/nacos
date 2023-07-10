@@ -24,10 +24,12 @@ import com.alibaba.nacos.api.lock.model.LockInfo;
  * @date 2023/6/28 2:38
  */
 public interface LockOperationService {
-    
+
     /**
      * get lock operator.
-     * @return Boolean.
+     * @param lockInfo lockInfo
+     * @param connectionId connectionId
+     * @return boolean
      */
-    Boolean lock(LockInfo lockInfo);
+    Boolean lock(LockInfo lockInfo, String connectionId);
 }

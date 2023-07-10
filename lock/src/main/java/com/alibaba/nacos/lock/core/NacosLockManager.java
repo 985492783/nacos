@@ -16,11 +16,34 @@
 
 package com.alibaba.nacos.lock.core;
 
+import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
+import com.alibaba.nacos.lock.core.reentrant.mutex.MutexAtomicLock;
+import org.springframework.stereotype.Service;
+
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * nacos lock manager.
  * @author 985492783@qq.com
  * @date 2023/6/28 2:16
  */
-public class NacosLockManager {
+@Service
+public class NacosLockManager implements LockManager {
 
+    private final ConcurrentHashMap<String, AbstractAtomicLock> atomicLockMap;
+
+    public NacosLockManager() {
+        atomicLockMap = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public AbstractAtomicLock getMutexLock(String key) {
+        AbstractAtomicLock atomicLock = atomicLockMap.computeIfAbsent(key, MutexAtomicLock::new);
+        return atomicLock;
+    }
+
+    @Override
+    public void acquireLock(String key, String connectionId) {
+
+    }
 }

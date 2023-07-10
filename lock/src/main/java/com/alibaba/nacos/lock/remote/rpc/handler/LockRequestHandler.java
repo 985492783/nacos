@@ -22,7 +22,9 @@ import com.alibaba.nacos.api.lock.remote.response.AcquireLockResponse;
 import com.alibaba.nacos.api.remote.request.RequestMeta;
 import com.alibaba.nacos.auth.annotation.Secured;
 import com.alibaba.nacos.core.remote.RequestHandler;
+import com.alibaba.nacos.lock.core.service.LockOperationService;
 import com.alibaba.nacos.plugin.auth.constant.ActionTypes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,11 +35,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LockRequestHandler extends RequestHandler<AcquireAbstractLockRequest, AcquireLockResponse> {
-    
+    @Autowired
+    private LockOperationService lockOperationService;
+
     @Override
     @Secured(action = ActionTypes.WRITE)
     public AcquireLockResponse handle(AcquireAbstractLockRequest request, RequestMeta meta) throws NacosException {
-        System.out.println(request.getLockInfo());
-        return new AcquireLockResponse(Boolean.TRUE);
+        Boolean lock = lockOperationService.lock(request.getLockInfo(), meta.getConnectionId());
+        return new AcquireLockResponse(lock);
     }
 }

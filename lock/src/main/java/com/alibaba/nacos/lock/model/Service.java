@@ -16,11 +16,59 @@
 
 package com.alibaba.nacos.lock.model;
 
+import java.util.Objects;
+
 /**
  * lock service.
  * @author 985492783@qq.com
  * @date 2023/6/28 2:36
  */
 public class Service {
+    /**
+     * service ip.
+     */
+    private String ip;
 
+    /**
+     * service port.
+     */
+    private int port;
+
+    public Service(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Service service = (Service) o;
+        return port == service.port && Objects.equals(ip, service.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ip, port);
+    }
 }

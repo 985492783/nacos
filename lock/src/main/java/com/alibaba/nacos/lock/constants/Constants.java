@@ -14,41 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.api.lock.model;
-
-import java.io.Serializable;
+package com.alibaba.nacos.lock.constants;
 
 /**
- * lock instance.
- * @author 985492783@qq.com
- * @date 2023/6/28 2:46
+ * constants.
+ * @author qiyue.zhang@aloudata.com
+ * @description Constants
+ * @date 2023/7/10 15:54
  */
-public class LockInstance implements Serializable {
-    private static final long serialVersionUID = -53506310567291979L;
+public class Constants {
 
-    /**
-     * instance ip.
-     */
-    private String ip;
-
-    /**
-     * instance port.
-     */
-    private int port;
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+    public static final String LOCK_ACQUIRE_SERVICE_GROUP_V2 = "lock_acquire_service_v2";
 }
