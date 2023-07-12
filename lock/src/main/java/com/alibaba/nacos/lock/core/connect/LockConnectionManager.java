@@ -16,6 +16,7 @@
 
 package com.alibaba.nacos.lock.core.connect;
 
+import com.alibaba.nacos.common.utils.ConcurrentHashSet;
 import com.alibaba.nacos.consistency.LockOperation;
 import com.alibaba.nacos.consistency.SerializeFactory;
 import com.alibaba.nacos.consistency.Serializer;
@@ -24,7 +25,9 @@ import com.alibaba.nacos.consistency.entity.WriteRequest;
 import com.alibaba.nacos.core.distributed.ProtocolManager;
 import com.alibaba.nacos.core.remote.ClientConnectionEventListener;
 import com.alibaba.nacos.core.remote.Connection;
+import com.alibaba.nacos.lock.constants.Constants;
 import com.alibaba.nacos.lock.core.service.impl.MutexOperationServiceImpl;
+import com.alibaba.nacos.lock.enums.ConnectTypeEnum;
 import com.alibaba.nacos.sys.utils.ApplicationUtils;
 import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
@@ -41,27 +44,44 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2023/7/10 10:47
  */
 @Component("lockConnectionManager")
-public class LockConnectionManager extends ClientConnectionEventListener {
+public class LockConnectionManager extends ClientConnectionEventListener implements ConnectionManager {
     private final Logger log = LoggerFactory.getLogger(LockConnectionManager.class);
-    private final ConcurrentHashMap<String, Connection> connectionMap;
+    private final ConcurrentHashSet<String> grpcConnectionMap;
     
     private final CPProtocol protocol;
     
     private final Serializer serializer = SerializeFactory.getDefault();
 
     public LockConnectionManager() {
-        connectionMap = new ConcurrentHashMap<>();
+        grpcConnectionMap = new ConcurrentHashSet<>();
         this.protocol = ApplicationUtils.getBean(ProtocolManager.class).getCpProtocol();
     }
 
     @Override
     public void clientConnected(Connection connect) {
         MutexOperationServiceImpl.ConnectedLockRequest request =
-                new MutexOperationServiceImpl.ConnectedLockRequest();
-        request.setConnectionId(connect.getMetaInfo().getConnectionId());
+                new MutexOperationServiceImpl.ConnectedLockRequest(
+                        connect.getMetaInfo().getConnectionId(), ConnectTypeEnum.GRPC);
         WriteRequest writeRequest = WriteRequest.newBuilder()
                 .setData(ByteString.copyFrom(serializer.serialize(request)))
-                .setOperation(LockOperation.CONNECTED.name()).build();
+                .setOperation(LockOperation.CONNECTED.name())
+                .setGroup(Constants.LOCK_ACQUIRE_SERVICE_GROUP_V2).build();
+        try {
+            protocol.write(writeRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void clientDisConnected(Connection connect) {
+        MutexOperationServiceImpl.DisconnectedLockRequest request =
+                new MutexOperationServiceImpl.DisconnectedLockRequest(
+                        connect.getMetaInfo().getConnectionId(), ConnectTypeEnum.GRPC);
+        WriteRequest writeRequest = WriteRequest.newBuilder()
+                .setData(ByteString.copyFrom(serializer.serialize(request)))
+                .setOperation(LockOperation.DISCONNECTED.name())
+                .setGroup(Constants.LOCK_ACQUIRE_SERVICE_GROUP_V2).build();
         try {
             protocol.write(writeRequest);
         } catch (Exception e) {
@@ -70,11 +90,17 @@ public class LockConnectionManager extends ClientConnectionEventListener {
     }
 
     @Override
-    public void clientDisConnected(Connection connect) {
-    
-    }
-
     public boolean isAlive(String connectionId) {
-        return connectionMap.containsKey(connectionId);
+        return grpcConnectionMap.contains(connectionId);
+    }
+    
+    @Override
+    public void createConnectionSync(String connectionId) {
+        grpcConnectionMap.add(connectionId);
+    }
+    
+    @Override
+    public void destroyConnectionSync(String connectionId) {
+        grpcConnectionMap.remove(connectionId);
     }
 }

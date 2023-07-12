@@ -29,9 +29,10 @@ import com.alibaba.nacos.consistency.entity.WriteRequest;
 import com.alibaba.nacos.core.distributed.ProtocolManager;
 import com.alibaba.nacos.lock.constants.Constants;
 import com.alibaba.nacos.lock.core.LockManager;
-import com.alibaba.nacos.lock.core.connect.LockConnectionManager;
+import com.alibaba.nacos.lock.core.connect.ConnectionManager;
 import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
 import com.alibaba.nacos.lock.core.service.LockOperationService;
+import com.alibaba.nacos.lock.enums.ConnectTypeEnum;
 import com.alibaba.nacos.lock.model.Service;
 import com.alibaba.nacos.sys.utils.ApplicationUtils;
 import com.google.protobuf.ByteString;
@@ -51,16 +52,16 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
 
     private final LockManager lockManager;
 
-    private LockConnectionManager lockConnectionManager;
+    private ConnectionManager connectionManager;
 
     private final Serializer serializer = SerializeFactory.getDefault();
 
     private final CPProtocol protocol;
 
 
-    public MutexOperationServiceImpl(LockManager lockManager, LockConnectionManager lockConnectionManager) {
+    public MutexOperationServiceImpl(LockManager lockManager, ConnectionManager connectionManager) {
         this.lockManager = lockManager;
-        this.lockConnectionManager = lockConnectionManager;
+        this.connectionManager = connectionManager;
         this.protocol = ApplicationUtils.getBean(ProtocolManager.class).getCpProtocol();
         this.protocol.addRequestProcessors(Collections.singletonList(this));
     }
@@ -81,14 +82,6 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
         }
     }
     
-    public void disConnect(String connectionId) {
-        DisconnectedLockRequest request = new DisconnectedLockRequest();
-        request.setConnectionId(connectionId);
-    }
-    
-    public void connect(String connectionId) {
-    
-    }
     
     private Service buildLockService(LockInstance lockInstance) {
         Service service = new Service(lockInstance.getIp(), lockInstance.getPort());
@@ -104,11 +97,17 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
     @Override
     public Response onApply(WriteRequest request) {
         try {
-            final MutexLockRequest mutexLockRequest = serializer.deserialize(request.getData().toByteArray());
             LockOperation lockOperation = LockOperation.valueOf(request.getOperation());
             Boolean data = null;
             if (lockOperation == LockOperation.ACQUIRE) {
+                final MutexLockRequest mutexLockRequest = serializer.deserialize(request.getData().toByteArray());
                 data = acquireLock(mutexLockRequest.getLockInfo(), mutexLockRequest.getConnectionId());
+            } else if (lockOperation == LockOperation.CONNECTED) {
+                data = handlerConnected(serializer.deserialize(request.getData().toByteArray()));
+            } else if (lockOperation == LockOperation.DISCONNECTED) {
+                data = handlerDisConnected(serializer.deserialize(request.getData().toByteArray()));
+            } else if (lockOperation == LockOperation.RELEASE) {
+            
             }
             ByteString bytes = ByteString.copyFrom(serializer.serialize(data));
             return Response.newBuilder().setSuccess(true).setData(bytes).build();
@@ -116,9 +115,26 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
             return Response.newBuilder().setSuccess(false).build();
         }
     }
-
+    
+    private Boolean handlerDisConnected(DisconnectedLockRequest request) {
+        String connectionId = request.getConnectionId();
+        if (request.getConnectType() == ConnectTypeEnum.GRPC) {
+            connectionManager.destroyConnectionSync(connectionId);
+            lockManager.disConnected(request.getConnectionId());
+        }
+        return true;
+    }
+    
+    private Boolean handlerConnected(ConnectedLockRequest request) {
+        String connectionId = request.getConnectionId();
+        if (request.getConnectType() == ConnectTypeEnum.GRPC) {
+            connectionManager.createConnectionSync(connectionId);
+        }
+        return true;
+    }
+    
     private Boolean acquireLock(LockInfo lockInfo, String connectionId) {
-        if (!lockConnectionManager.isAlive(connectionId)) {
+        if (!connectionManager.isAlive(connectionId)) {
             return false;
         }
         String key = lockInfo.getKey();
@@ -167,6 +183,24 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
         
         private String connectionId;
         
+        private ConnectTypeEnum connectType;
+        
+        public DisconnectedLockRequest() {
+        }
+        
+        public DisconnectedLockRequest(String connectionId, ConnectTypeEnum connectType) {
+            this.connectionId = connectionId;
+            this.connectType = connectType;
+        }
+        
+        public ConnectTypeEnum getConnectType() {
+            return connectType;
+        }
+        
+        public void setConnectType(ConnectTypeEnum connectType) {
+            this.connectType = connectType;
+        }
+        
         public String getConnectionId() {
             return connectionId;
         }
@@ -181,6 +215,24 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
         private static final long serialVersionUID = -925333547156890549L;
         
         private String connectionId;
+        
+        private ConnectTypeEnum connectType;
+        
+        public ConnectedLockRequest() {
+        }
+        
+        public ConnectedLockRequest(String connectionId, ConnectTypeEnum connectType) {
+            this.connectionId = connectionId;
+            this.connectType = connectType;
+        }
+        
+        public ConnectTypeEnum getConnectType() {
+            return connectType;
+        }
+        
+        public void setConnectType(ConnectTypeEnum connectType) {
+            this.connectType = connectType;
+        }
         
         public String getConnectionId() {
             return connectionId;

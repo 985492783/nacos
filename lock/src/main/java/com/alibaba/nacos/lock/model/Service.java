@@ -18,6 +18,7 @@ package com.alibaba.nacos.lock.model;
 
 import com.alibaba.nacos.common.utils.ConcurrentHashSet;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 

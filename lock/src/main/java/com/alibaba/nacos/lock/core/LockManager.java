@@ -37,4 +37,6 @@ public interface LockManager {
     void acquireLock(String connectionId, Service service);
     
     Service getSingletonService(Service service);
+    
+    void disConnected(String connectionId);
 }

@@ -16,6 +16,7 @@
 
 package com.alibaba.nacos.lock.core;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
 import com.alibaba.nacos.lock.core.reentrant.mutex.MutexAtomicLock;
 import com.alibaba.nacos.lock.model.Service;
@@ -55,6 +56,20 @@ public class NacosLockManager implements LockManager {
     
     @Override
     public Service getSingletonService(Service service) {
+        if (service == null) {
+            return null;
+        }
         return singletonServiceMap.computeIfAbsent(service, (key) -> service);
+    }
+    
+    @Override
+    public void disConnected(String connectionId) {
+        Service service = getSingletonService(connectionServiceMap.get(connectionId));
+        if (service == null || CollectionUtils.isEmpty(service.getKeysSet())) {
+            return;
+        }
+        service.getKeysSet().forEach(key -> {
+            atomicLockMap.get(key).unLock(service);
+        });
     }
 }
