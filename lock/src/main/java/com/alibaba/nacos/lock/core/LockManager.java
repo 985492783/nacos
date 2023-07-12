@@ -17,6 +17,7 @@
 package com.alibaba.nacos.lock.core;
 
 import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
+import com.alibaba.nacos.lock.model.Service;
 
 /**
  * lock manager.
@@ -33,5 +34,7 @@ public interface LockManager {
      */
     AbstractAtomicLock getMutexLock(String key);
 
-    void acquireLock(String key, String connectionId);
+    void acquireLock(String connectionId, Service service);
+    
+    Service getSingletonService(Service service);
 }

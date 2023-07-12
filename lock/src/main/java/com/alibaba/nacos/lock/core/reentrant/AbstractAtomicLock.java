@@ -16,6 +16,8 @@
 
 package com.alibaba.nacos.lock.core.reentrant;
 
+import com.alibaba.nacos.lock.model.Service;
+
 /**
  * atomic lock.
  * @author qiyue.zhang@aloudata.com
@@ -27,5 +29,26 @@ public abstract class AbstractAtomicLock implements AtomicLockService {
     public AbstractAtomicLock(String key) {
         this.key = key;
     }
-
+    
+    @Override
+    public final Boolean tryLock(Service service) {
+       if (innerTryLock(service)) {
+           service.addKey(key);
+           return true;
+       }
+       return false;
+    }
+    
+    @Override
+    public final Boolean unLock(Service service) {
+        if (innerUnLock(service)) {
+            service.removeKey(key);
+            return true;
+        }
+        return false;
+    }
+    
+    public abstract Boolean innerTryLock(Service service);
+    
+    public abstract Boolean innerUnLock(Service service);
 }

@@ -37,7 +37,7 @@ public class MutexAtomicLock extends AbstractAtomicLock {
     }
 
     @Override
-    public Boolean tryLock(Service service) {
+    public Boolean innerTryLock(Service service) {
         if (service == lockService.get()) {
             return true;
         }
@@ -45,7 +45,7 @@ public class MutexAtomicLock extends AbstractAtomicLock {
     }
 
     @Override
-    public Boolean unLock(Service service) {
+    public Boolean innerUnLock(Service service) {
         return lockService.compareAndSet(service, null);
     }
 }

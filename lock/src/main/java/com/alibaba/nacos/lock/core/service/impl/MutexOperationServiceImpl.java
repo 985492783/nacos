@@ -29,7 +29,7 @@ import com.alibaba.nacos.consistency.entity.WriteRequest;
 import com.alibaba.nacos.core.distributed.ProtocolManager;
 import com.alibaba.nacos.lock.constants.Constants;
 import com.alibaba.nacos.lock.core.LockManager;
-import com.alibaba.nacos.lock.core.client.LockConnectionManager;
+import com.alibaba.nacos.lock.core.connect.LockConnectionManager;
 import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
 import com.alibaba.nacos.lock.core.service.LockOperationService;
 import com.alibaba.nacos.lock.model.Service;
@@ -39,7 +39,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * mutex operation.
@@ -58,12 +57,10 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
 
     private final CPProtocol protocol;
 
-    private final ConcurrentHashMap<Service, Service> singletonServiceMap;
 
     public MutexOperationServiceImpl(LockManager lockManager, LockConnectionManager lockConnectionManager) {
         this.lockManager = lockManager;
         this.lockConnectionManager = lockConnectionManager;
-        this.singletonServiceMap = new ConcurrentHashMap<>();
         this.protocol = ApplicationUtils.getBean(ProtocolManager.class).getCpProtocol();
         this.protocol.addRequestProcessors(Collections.singletonList(this));
     }
@@ -83,10 +80,19 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
             return false;
         }
     }
-
+    
+    public void disConnect(String connectionId) {
+        DisconnectedLockRequest request = new DisconnectedLockRequest();
+        request.setConnectionId(connectionId);
+    }
+    
+    public void connect(String connectionId) {
+    
+    }
+    
     private Service buildLockService(LockInstance lockInstance) {
         Service service = new Service(lockInstance.getIp(), lockInstance.getPort());
-        Service singleton = singletonServiceMap.computeIfAbsent(service, (key) -> service);
+        Service singleton = lockManager.getSingletonService(service);
         return singleton;
     }
 
@@ -112,22 +118,17 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
     }
 
     private Boolean acquireLock(LockInfo lockInfo, String connectionId) {
-        try {
-            lockConnectionManager.readLock.lock();
-            if (!lockConnectionManager.isAlive(connectionId)) {
-                return false;
-            }
-            String key = lockInfo.getKey();
-            AbstractAtomicLock mutexLock = lockManager.getMutexLock(key);
-            Service service = buildLockService(lockInfo.getLockInstance());
-            Boolean lock = mutexLock.tryLock(service);
-            if (lock) {
-                lockManager.acquireLock(key, connectionId);
-            }
-            return lock;
-        } finally {
-            lockConnectionManager.readLock.unlock();
+        if (!lockConnectionManager.isAlive(connectionId)) {
+            return false;
         }
+        String key = lockInfo.getKey();
+        AbstractAtomicLock mutexLock = lockManager.getMutexLock(key);
+        Service service = buildLockService(lockInfo.getLockInstance());
+        Boolean lock = mutexLock.tryLock(service);
+        if (lock) {
+            lockManager.acquireLock(connectionId, service);
+        }
+        return lock;
     }
 
     @Override
@@ -157,6 +158,36 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
 
         public void setLockInfo(LockInfo lockInfo) {
             this.lockInfo = lockInfo;
+        }
+    }
+    
+    public static class DisconnectedLockRequest implements Serializable {
+        
+        private static final long serialVersionUID = -925333547156890549L;
+        
+        private String connectionId;
+        
+        public String getConnectionId() {
+            return connectionId;
+        }
+        
+        public void setConnectionId(String connectionId) {
+            this.connectionId = connectionId;
+        }
+    }
+    
+    public static class ConnectedLockRequest implements Serializable {
+        
+        private static final long serialVersionUID = -925333547156890549L;
+        
+        private String connectionId;
+        
+        public String getConnectionId() {
+            return connectionId;
+        }
+        
+        public void setConnectionId(String connectionId) {
+            this.connectionId = connectionId;
         }
     }
 }

@@ -16,7 +16,10 @@
 
 package com.alibaba.nacos.lock.model;
 
+import com.alibaba.nacos.common.utils.ConcurrentHashSet;
+
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * lock service.
@@ -33,6 +36,8 @@ public class Service {
      * service port.
      */
     private int port;
+    
+    private volatile Set<String> keysSet;
 
     public Service(String ip, int port) {
         this.ip = ip;
@@ -54,7 +59,11 @@ public class Service {
     public void setPort(int port) {
         this.port = port;
     }
-
+    
+    public Set<String> getKeysSet() {
+        return keysSet;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -70,5 +79,20 @@ public class Service {
     @Override
     public int hashCode() {
         return Objects.hash(ip, port);
+    }
+    
+    public void addKey(String key) {
+        if (keysSet == null) {
+            synchronized (this) {
+                if (keysSet == null) {
+                    keysSet = new ConcurrentHashSet<>();
+                }
+            }
+        }
+        keysSet.add(key);
+    }
+    
+    public void removeKey(String key) {
+        keysSet.remove(key);
     }
 }

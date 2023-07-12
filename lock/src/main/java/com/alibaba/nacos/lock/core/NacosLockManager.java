@@ -18,7 +18,7 @@ package com.alibaba.nacos.lock.core;
 
 import com.alibaba.nacos.lock.core.reentrant.AbstractAtomicLock;
 import com.alibaba.nacos.lock.core.reentrant.mutex.MutexAtomicLock;
-import org.springframework.stereotype.Service;
+import com.alibaba.nacos.lock.model.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,13 +27,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 985492783@qq.com
  * @date 2023/6/28 2:16
  */
-@Service
+@org.springframework.stereotype.Service
 public class NacosLockManager implements LockManager {
 
     private final ConcurrentHashMap<String, AbstractAtomicLock> atomicLockMap;
-
+    
+    private final ConcurrentHashMap<String, Service> connectionServiceMap;
+    
+    private final ConcurrentHashMap<Service, Service> singletonServiceMap;
+    
     public NacosLockManager() {
-        atomicLockMap = new ConcurrentHashMap<>();
+        this.singletonServiceMap = new ConcurrentHashMap<>();
+        this.connectionServiceMap = new ConcurrentHashMap<>();
+        this.atomicLockMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -43,7 +49,12 @@ public class NacosLockManager implements LockManager {
     }
 
     @Override
-    public void acquireLock(String key, String connectionId) {
-
+    public void acquireLock(String connectionId, Service service) {
+        connectionServiceMap.put(connectionId, service);
+    }
+    
+    @Override
+    public Service getSingletonService(Service service) {
+        return singletonServiceMap.computeIfAbsent(service, (key) -> service);
     }
 }

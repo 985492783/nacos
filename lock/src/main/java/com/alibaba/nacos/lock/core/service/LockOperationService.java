@@ -32,4 +32,5 @@ public interface LockOperationService {
      * @return boolean
      */
     Boolean lock(LockInfo lockInfo, String connectionId);
+    
 }

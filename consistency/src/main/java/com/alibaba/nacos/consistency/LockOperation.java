@@ -28,5 +28,13 @@ public enum LockOperation {
     /**
      * Release.
      */
-    RELEASE
+    RELEASE,
+    /**
+     * disconnected.
+     */
+    DISCONNECTED,
+    /**
+     * connected.
+     */
+    CONNECTED;
 }
