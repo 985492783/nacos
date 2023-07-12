@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * MutexAtomicLock.
- * @author qiyue.zhang@aloudata.com
+ * @author 985492783@qq.com
  * @description MutexAtomicLock
  * @date 2023/7/10 15:33
  */

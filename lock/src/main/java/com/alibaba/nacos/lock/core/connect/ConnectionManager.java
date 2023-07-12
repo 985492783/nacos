@@ -1,7 +1,7 @@
 package com.alibaba.nacos.lock.core.connect;
 
 /**
- * @author zhanghong
+ * @author 985492783@qq.com
  * @description ConnectionManager
  * @date 2023/7/12 13:41
  */

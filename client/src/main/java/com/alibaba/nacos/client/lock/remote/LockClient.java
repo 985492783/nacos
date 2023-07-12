@@ -24,7 +24,7 @@ import com.alibaba.nacos.common.lifecycle.Closeable;
 
 /**
  * lock client interface.
- * @author zhanghong
+ * @author 985492783@qq.com
  * @description LockClient
  * @date 2023/6/28 17:19
  */

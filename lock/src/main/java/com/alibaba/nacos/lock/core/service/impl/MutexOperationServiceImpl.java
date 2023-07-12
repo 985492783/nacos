@@ -16,6 +16,8 @@
 
 package com.alibaba.nacos.lock.core.service.impl;
 
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.exception.runtime.NacosRuntimeException;
 import com.alibaba.nacos.api.lock.model.LockInfo;
 import com.alibaba.nacos.api.lock.model.LockInstance;
 import com.alibaba.nacos.consistency.LockOperation;
@@ -78,7 +80,7 @@ public class MutexOperationServiceImpl extends RequestProcessor4CP implements Lo
             Response response = protocol.write(writeRequest);
             return serializer.deserialize(response.getData().toByteArray());
         } catch (Exception e) {
-            return false;
+            throw new NacosRuntimeException(NacosException.SERVER_ERROR, e);
         }
     }
     

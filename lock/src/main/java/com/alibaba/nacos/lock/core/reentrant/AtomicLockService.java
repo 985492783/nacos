@@ -20,7 +20,7 @@ import com.alibaba.nacos.lock.model.Service;
 
 /**
  * AtomicLockService.
- * @author zhanghong
+ * @author 985492783@qq.com
  * @description AtomicLockService
  * @date 2023/7/10 15:34
  */

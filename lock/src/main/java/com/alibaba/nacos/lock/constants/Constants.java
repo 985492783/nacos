@@ -18,7 +18,7 @@ package com.alibaba.nacos.lock.constants;
 
 /**
  * constants.
- * @author qiyue.zhang@aloudata.com
+ * @author 985492783@qq.com
  * @description Constants
  * @date 2023/7/10 15:54
  */

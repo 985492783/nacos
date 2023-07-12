@@ -21,7 +21,7 @@ import com.alibaba.nacos.lock.model.Service;
 
 /**
  * lock manager.
- * @author zhanghong
+ * @author 985492783@qq.com
  * @description LockManager
  * @date 2023/7/10 15:10
  */

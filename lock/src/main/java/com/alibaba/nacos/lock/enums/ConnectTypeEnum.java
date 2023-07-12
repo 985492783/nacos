@@ -3,7 +3,7 @@ package com.alibaba.nacos.lock.enums;
 import java.io.Serializable;
 
 /**
- * @author qiyue.zhang@aloudata.com
+ * @author 985492783@qq.com
  * @description ConnectTypeEnum
  * @date 2023/7/12 13:02
  */
